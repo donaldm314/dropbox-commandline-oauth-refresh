@@ -19,4 +19,4 @@ This results in two secrets:
 - an app key
 - an app secret
 
-Store those in a .env file. Because they are secret, do not add them to git, keep them rw only for the user.
+Store those in a .env file. Because they are secret, **do not add them to git**, keep them **read-write only for the user**.
