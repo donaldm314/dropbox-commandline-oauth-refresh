@@ -9,16 +9,6 @@ import dropbox
 from dropbox import DropboxOAuth2FlowNoRedirect
 from dropbox.exceptions import ApiError
 
-DOTENV_FILE = find_dotenv()
-DOTENV_PATH = Path(DOTENV_FILE)
-os.chmod(DOTENV_PATH, 0o600)
-load_dotenv(DOTENV_FILE)
-APP_KEY = os.getenv("DROPBOX_APP_KEY")
-APP_SECRET = os.getenv("DROPBOX_APP_SECRET")
-ACCESS_TOKEN = os.getenv("DROPBOX_ACCESS_TOKEN")
-REFRESH_TOKEN = os.getenv("DROPBOX_REFRESH_TOKEN")
-
-
 script_name = os.path.basename(sys.argv[0])
 logger = logging.getLogger(script_name)
 logger.setLevel(logging.INFO)
@@ -27,10 +17,21 @@ console_format = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
 console_handler.setFormatter(console_format)
 logger.addHandler(console_handler)
 
+DOTENV_FILE = find_dotenv()
+if not os.path.isfile(DOTENV_FILE):
+    logger.critical("Did not find a .env file!")
+    sys.exit("No .env file found!")
+DOTENV_PATH = Path(DOTENV_FILE)
+os.chmod(DOTENV_PATH, 0o600)
+load_dotenv(DOTENV_FILE)
+APP_KEY = os.getenv("DROPBOX_APP_KEY")
+APP_SECRET = os.getenv("DROPBOX_APP_SECRET")
+REFRESH_TOKEN = os.getenv("DROPBOX_REFRESH_TOKEN")
+
 
 def start_oauth_flow():
-    # No access tokens were available, so start the OAuth flow. We request
-    # offline, so we will receive an access and a refresh token.
+    # No refresh was available, so start the OAuth flow. We request
+    # offline, so we will receive a refresh token.
     logger.info("Initiating OAuth flow.")
     flow = DropboxOAuth2FlowNoRedirect(
         APP_KEY,
@@ -53,15 +54,10 @@ def start_oauth_flow():
         # Update .env file with new tokens
         set_key(
             dotenv_path=DOTENV_PATH,
-            key_to_set='DROPBOX_ACCESS_TOKEN',
-            value_to_set=oauth_result.access_token
-        )
-        set_key(
-            dotenv_path=DOTENV_PATH,
             key_to_set='DROPBOX_REFRESH_TOKEN',
             value_to_set=oauth_result.refresh_token
         )
-        logger.info("Stored new access and refresh tokens")
+        logger.info("Stored new refresh token")
         return oauth_result.refresh_token
     except dropbox.exceptions.AuthError as e:
         logger.critical(e)
@@ -69,18 +65,17 @@ def start_oauth_flow():
 
 
 def get_refresh_token():
-    if ACCESS_TOKEN and REFRESH_TOKEN:
-        logger.info("We've received tokens in the past.")
+    if REFRESH_TOKEN:
+        logger.info("We've received a refresh in the past")
         dbx = dropbox.Dropbox(
             app_key=APP_KEY,
             app_secret=APP_SECRET,
-            oauth2_access_token=ACCESS_TOKEN,
             oauth2_refresh_token=REFRESH_TOKEN
         )
         try:
             dbx.users_get_current_account()
 
-            logger.info("Using our existing tokens.")
+            logger.info("Using our existing tokens")
             return REFRESH_TOKEN
         except dropbox.exceptions.AuthError as e:
             logger.critical(e)
