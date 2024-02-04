@@ -37,11 +37,15 @@ Store those in a .env file. Because they are secret, **do not add them to git**,
 2. After pasting the authorization code, the script connects to Dropbox and reads the display name of the account:
 
     > oauth2-with-refresh.py - INFO - Stored new refresh token
+    >
     > Dropbox display name: Don Murray
 
 3. The refresh token is now stored in .env, and can be used without re-authorizing:
 
     > ./oauth2-with-refresh.py 
+    >
     > oauth2-with-refresh.py - INFO - We've received a refresh in the past
+    >
     > oauth2-with-refresh.py - INFO - Using our existing tokens
+    >
     > Dropbox display name: Don Murray
