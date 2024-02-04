@@ -66,7 +66,7 @@ def start_oauth_flow():
 
 def get_refresh_token():
     if REFRESH_TOKEN:
-        logger.info("We've received a refresh in the past")
+        logger.info("We've received a refresh token in the past")
         dbx = dropbox.Dropbox(
             app_key=APP_KEY,
             app_secret=APP_SECRET,
@@ -75,7 +75,7 @@ def get_refresh_token():
         try:
             dbx.users_get_current_account()
 
-            logger.info("Using our existing tokens")
+            logger.info("Using our existing refresh token")
             return REFRESH_TOKEN
         except dropbox.exceptions.AuthError as e:
             logger.critical(e)

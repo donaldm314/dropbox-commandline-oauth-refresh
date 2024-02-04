@@ -25,27 +25,27 @@ Store those in a .env file. Because they are secret, **do not add them to git**,
 
 1. the first time you run the script, it will prompt you to seek an authorization code:
 
-    > ./oauth2-with-refresh.py 
-    > oauth2-with-refresh.py - INFO - Initiating OAuth flow.
-    >
-    > 1. Go to: https://www.dropbox.com/oauth2/authorize?response_type=code&client_id=SOME_ID&token_access_type=offline
-    > 2. Click 'Allow' (you might have to log into Dropbox first).
-    > 3. Copy the authorization code.
-    >
-    > Enter the authorization code here:
+   > ./oauth2-with-refresh.py
+   > oauth2-with-refresh.py - INFO - Initiating OAuth flow.
+   >
+   > 1. Go to: https://www.dropbox.com/oauth2/authorize?response_type=code&client_id=SOME_ID&token_access_type=offline
+   > 2. Click 'Allow' (you might have to log into Dropbox first).
+   > 3. Copy the authorization code.
+   >
+   > Enter the authorization code here:
 
 2. After pasting the authorization code, the script connects to Dropbox and reads the display name of the account:
 
-    > oauth2-with-refresh.py - INFO - Stored new refresh token
-    >
-    > Dropbox display name: Don Murray
+   > oauth2-with-refresh.py - INFO - Stored new refresh token
+   >
+   > Dropbox display name: Don Murray
 
 3. The refresh token is now stored in .env, and can be used without re-authorizing:
 
-    > ./oauth2-with-refresh.py 
-    >
-    > oauth2-with-refresh.py - INFO - We've received a refresh in the past
-    >
-    > oauth2-with-refresh.py - INFO - Using our existing tokens
-    >
-    > Dropbox display name: Don Murray
+   > ./oauth2-with-refresh.py
+   >
+   > oauth2-with-refresh.py - INFO - We've received a refresh token in the past
+   >
+   > oauth2-with-refresh.py - INFO - Using our existing refresh token
+   >
+   > Dropbox display name: Don Murray
